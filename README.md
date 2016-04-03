@@ -33,6 +33,8 @@ This package needs set up some paths from Settings
 - JAVA_HOME Path
     - RedPen CLI needs JAVA_HOME path.
 
+If you prefer to use RedPen server than CLI. You can set your RedPen Server endpoint on `Path for RedPen CLI` fieald.
+
 ### Run
 
 1. open a text file as bellow
