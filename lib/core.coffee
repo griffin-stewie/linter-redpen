@@ -1,6 +1,9 @@
 path = require 'path'
 {exec} = require 'atom-linter'
-Root = require('./linter-redpen.coffee')
+Root = require './linter-redpen.coffee'
+rp = require 'request-promise'
+fs = require 'fs'
+urljoin = require 'url-join'
 
 module.exports =
   scopes: [
@@ -19,8 +22,65 @@ module.exports =
       when 'source.asciidoc' then "asciidoc"
       else "plain"
 
-  lint: (filePath, configurationXMLPath, scopeName) ->
-    console.log "core.coffee lint method called"
+  convertToErrors: (JSONString) ->
+    result = JSON.parse(JSONString)
+    console.log "Result JSON ↓"
+    console.log result
+    return result[0]
+
+  lint: (source, filePath, configurationXMLPath, scopeName) ->
+
+    pathForRedPen = atom.config.get Root.PathForRedPenKey
+
+    unless pathForRedPen?
+      pathForRedPen = "redpen"
+      return @lintCommand(pathForRedPen, source, filePath, configurationXMLPath, scopeName)
+
+    if pathForRedPen.length isnt 0
+      if pathForRedPen.indexOf "http" is 0
+        return @lintServer(pathForRedPen, source, filePath, configurationXMLPath, scopeName)
+
+    pathForRedPen = "redpen"
+    return @lintCommand(pathForRedPen, source, filePath, configurationXMLPath, scopeName)
+
+
+
+  lintServer: (server, source, filePath, configurationXMLPath, scopeName) ->
+    console.log "core.coffee lintCommand method called"
+
+    inputFormat = @detectedInputFormat scopeName
+
+    console.log "InputFormat: " + inputFormat
+
+    args = []
+    configXMLContent = null
+
+    args = args.concat(["-r", "json2", "-f", inputFormat, filePath])
+
+    opt =
+      uri: urljoin(server, "rest/document/validate")
+      method: 'POST',
+      form:
+        document: source,
+        lang: 'ja',
+        format: 'json2',
+        documentParser: inputFormat,
+      json: true
+
+    if configurationXMLPath != null && configurationXMLPath.length > 0
+      args = args.concat(["-c", configurationXMLPath])
+      configXMLContent = fs.readFileSync configurationXMLPath
+      opt.form.config = configXMLContent
+
+    console.log "server is " + server
+    console.log "args is " + args
+    console.log "opt is ↓"
+    console.log opt
+
+    return rp(opt)
+
+  lintCommand: (pathForRedPen, source, filePath, configurationXMLPath, scopeName) ->
+    console.log "core.coffee lintCommand method called"
 
     inputFormat = @detectedInputFormat scopeName
 
@@ -29,14 +89,6 @@ module.exports =
     opt = {
       "throwOnStdErr" : false
       }
-
-    pathForRedPen = atom.config.get Root.PathForRedPenKey
-
-    unless pathForRedPen?
-      pathForRedPen = "redpen"
-
-    if pathForRedPen.length is 0
-      pathForRedPen = "redpen"
 
     args = []
 
@@ -56,3 +108,6 @@ module.exports =
     console.log "opt is " + opt
 
     return exec(command, args, opt)
+      .then (result) =>
+        json = @convertToErrors result
+        return Promise.resolve(json)
