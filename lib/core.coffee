@@ -86,9 +86,9 @@ module.exports =
 
     console.log "InputFormat: " + inputFormat
 
-    opt = {
-      "throwOnStdErr" : false
-      }
+    opt =
+      throwOnStdErr: false,
+      timeout: 30
 
     args = []
 
