@@ -8,7 +8,7 @@ module.exports = LinterRedpen =
   config:
     pathForRedPen:
       title: 'Path for RedPen CLI'
-      description: 'Requires v1.5.4 or higher'
+      description: 'CLI version should be v1.5.4 or higher. If you prefer to use RedPen server than CLI. You can set your RedPen Server endpoint on Path for RedPen CLI fieald.'
       type: 'string'
       default: ""
       order: 10
