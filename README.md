@@ -30,6 +30,8 @@ This package needs set up some paths from Settings
     - `redpen` is default
 - Path for Configuration XML File
     - RedPen CLI needs configuration XML file for validation. you can set your configuration XML file.
+- Locale for Configuration XML File    
+    - uses auto detect configuration XML file
 - JAVA_HOME Path
     - RedPen CLI needs JAVA_HOME path.
 
@@ -43,3 +45,21 @@ If you prefer to use RedPen server than CLI. You can set your RedPen Server endp
     - Plain
     - AsciiDoc
 2. You can see report pane at bottom.
+
+### Searching Configuration XML
+
+linter-redpen searches configuration XML. searching order is
+
+1. `Path for Configuration XML File` on settings
+1. in the same directory as the target text file
+1. in the project root directory
+1. directly under `REDPEN_HOME`
+1. directly under `REDPEN_HOME/conf/`
+
+Configuration XML File name shold be
+
+- `redpen-conf.xml`
+- `redpen-conf-{LOCALE}.xml`
+   - ex: `redpen-conf-ja.xml` OR `redpen-conf-en.xml`
+
+You can set your `{LOCALE}` on settings.
