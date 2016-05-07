@@ -1,4 +1,3 @@
-path = require 'path'
 {exec} = require 'atom-linter'
 Root = require './linter-redpen.coffee'
 rp = require 'request-promise'
@@ -43,10 +42,48 @@ module.exports =
     pathForRedPen = "redpen"
     return @lintCommand(pathForRedPen, source, filePath, configurationXMLPath, scopeName)
 
+  resolveConfigLocation: (configurationXMLPath, targetFilePath) ->
+    defaultConfigName = "redpen-conf"
+    pathCandidates = []
+    locale = atom.config.get Root.LocaleForConfigurationXMLFileKey
+    console.log "Locale: " + locale
 
+    REDPEN_HOME = process.env["REDPEN_HOME"]
+
+    path = require 'path'
+
+    if configurationXMLPath != null && configurationXMLPath.length > 0
+      pathCandidates.push(configurationXMLPath)
+
+    pathToTargetFileDir = path.dirname(targetFilePath)
+    pathCandidates.push(path.join(pathToTargetFileDir, defaultConfigName + ".xml"))
+    pathCandidates.push(path.join(pathToTargetFileDir, defaultConfigName + "-" + locale + ".xml"))
+
+    for dir in atom.project.getDirectories()
+      projPath = dir.getRealPathSync()
+      pathCandidates.push(path.join(projPath, defaultConfigName + ".xml"))
+      pathCandidates.push(path.join(projPath, defaultConfigName + "-" + locale + ".xml"))
+
+    if REDPEN_HOME?
+      pathCandidates.push(path.join(REDPEN_HOME, defaultConfigName + ".xml"))
+      pathCandidates.push(path.join(REDPEN_HOME, defaultConfigName + "-" + locale + ".xml"))
+      pathCandidates.push(path.join(REDPEN_HOME, "conf", defaultConfigName + ".xml"))
+      pathCandidates.push(path.join(REDPEN_HOME, "conf", defaultConfigName + "-" + locale + ".xml"))
+
+    resolved = @resolve(pathCandidates)
+    console.log "resolved ConfigXML Path: " + resolved
+    return resolved
+
+  resolve: (pathCandidates) ->
+    console.log pathCandidates
+    for path in pathCandidates
+      if fs.existsSync(path) and fs.statSync(path).isFile()
+        return path
+
+    return null
 
   lintServer: (server, source, filePath, configurationXMLPath, scopeName) ->
-    console.log "core.coffee lintCommand method called"
+    console.log "core.coffee lintServer method called"
 
     inputFormat = @detectedInputFormat scopeName
 
@@ -67,9 +104,10 @@ module.exports =
         documentParser: inputFormat,
       json: true
 
-    if configurationXMLPath != null && configurationXMLPath.length > 0
-      args = args.concat(["-c", configurationXMLPath])
-      configXMLContent = fs.readFileSync configurationXMLPath
+    xmlPath = @resolveConfigLocation(configurationXMLPath, filePath)
+    if xmlPath != null && xmlPath.length > 0
+      args = args.concat(["-c", xmlPath])
+      configXMLContent = fs.readFileSync xmlPath
       opt.form.config = configXMLContent
 
     console.log "server is " + server
@@ -92,8 +130,9 @@ module.exports =
 
     args = []
 
-    if configurationXMLPath != null && configurationXMLPath.length > 0
-      args = args.concat(["-c", configurationXMLPath])
+    xmlPath = @resolveConfigLocation(configurationXMLPath, filePath)
+    if xmlPath != null && xmlPath.length > 0
+      args = args.concat(["-c", xmlPath])
 
     args = args.concat(["-r", "json2", "-f", inputFormat, filePath])
 
