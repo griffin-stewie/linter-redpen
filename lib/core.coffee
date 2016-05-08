@@ -8,6 +8,7 @@ module.exports =
   scopes: [
     'source.gfm'
     'source.asciidoc'
+    'text.tex.latex'
     'text.html.textile'
     'text.plain'
     'text.plain.null-grammar'
@@ -19,6 +20,7 @@ module.exports =
       when 'source.gfm' then "markdown"
       when 'text.html.textile' then "wiki"
       when 'source.asciidoc' then "asciidoc"
+      when 'text.tex.latex' then "latex"
       else "plain"
 
   convertToErrors: (JSONString) ->
