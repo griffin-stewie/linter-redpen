@@ -1,3 +1,7 @@
+## 0.4.0 - Support LaTeX
+
+- Added support LaTex 
+
 ## 0.3.0 - Add searching configuration XML
 
 Added searching configuration XML feature. order is
