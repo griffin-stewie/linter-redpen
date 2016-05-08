@@ -44,6 +44,7 @@ If you prefer to use RedPen server than CLI. You can set your RedPen Server endp
     - Textile
     - Plain
     - AsciiDoc
+    - LaTeX
 2. You can see report pane at bottom.
 
 ### Searching Configuration XML
