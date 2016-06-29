@@ -1,9 +1,14 @@
 {
     "name": "linter-redpen",
     "main": "./lib/linter-redpen",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "description": "A plugin for Atom Linter providing an interface to redpen.",
     "keywords": [
+        "markdown",
+        "textile",
+        "asciidoc",
+        "latex",
+        "re:view",
         "text",
         "lint",
         "redpen"

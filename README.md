@@ -45,6 +45,8 @@ If you prefer to use RedPen server than CLI. You can set your RedPen Server endp
     - Plain
     - AsciiDoc
     - LaTeX
+    - Re:VIEW
+    
 2. You can see report pane at bottom.
 
 ### Searching Configuration XML

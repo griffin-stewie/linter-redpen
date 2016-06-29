@@ -1,6 +1,10 @@
+## 0.5.0 - Support Re:VIEW
+
+- Added support Re:VIEW
+
 ## 0.4.0 - Support LaTeX
 
-- Added support LaTex 
+- Added support LaTex
 
 ## 0.3.0 - Add searching configuration XML
 
