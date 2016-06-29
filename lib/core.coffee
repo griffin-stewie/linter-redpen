@@ -8,6 +8,7 @@ module.exports =
   scopes: [
     'source.gfm'
     'source.asciidoc'
+    'source.review'
     'text.tex.latex'
     'text.html.textile'
     'text.plain'
@@ -18,6 +19,7 @@ module.exports =
   detectedInputFormat: (scopeName) ->
     switch scopeName
       when 'source.gfm' then "markdown"
+      when 'source.review' then "review"
       when 'text.html.textile' then "wiki"
       when 'source.asciidoc' then "asciidoc"
       when 'text.tex.latex' then "latex"
