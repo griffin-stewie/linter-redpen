@@ -39,8 +39,8 @@ module.exports =
       pathForRedPen = "redpen"
       return @lintCommand(pathForRedPen, source, filePath, configurationXMLPath, scopeName)
 
-    if pathForRedPen.length isnt 0
-      if pathForRedPen.indexOf "http" is 0
+    if pathForRedPen.length != 0
+      if pathForRedPen.indexOf("http") == 0
         return @lintServer(pathForRedPen, source, filePath, configurationXMLPath, scopeName)
 
     pathForRedPen = "redpen"
